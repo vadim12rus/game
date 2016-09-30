@@ -18,9 +18,15 @@ enum struct Direction
 struct Player
 {
 	sf::Sprite playerSprite;
+
 	Direction direction;
+
 	sf::Vector2f mousePosition;
-	float currentFrame = 0;
+
+	float currentFrame;
+	int countFrame;
+
+	bool isShoot;
 };
 
 void InitializePlayer(Player & player, TextureGame & texture);

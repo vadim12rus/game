@@ -8,13 +8,16 @@ void InitializePlayer(Player & player, TextureGame & texture)
 	player.playerSprite.setTexture(texture.playerTexture);
 	player.playerSprite.setTextureRect(sf::IntRect(150, 121, 150, 121));
 	player.playerSprite.setPosition(250, 250);
+	player.direction = Direction::NONE;
+	player.countFrame = 0;
+	player.currentFrame = 0;
+	player.isShoot = false;
 }
 
 void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 {
 	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 	mousePosition = window.mapPixelToCoords(pixelPos);
-	//std::cout << mousePosition.x << std::endl;
 }
 
 void UpdatePlayerRotation(Player &player) //ѕоворот игрока за курсором мыши
@@ -28,43 +31,59 @@ void UpdatePlayerRotation(Player &player) //ѕоворот игрока за курсором мыши
 }
 
 
-void UpdatePlayerFrame(Player &player, float const step)
+void UpdatePlayerFrame(Player &player, float const step, sf::Vector2f &intRect) //обновление кадров
 {
 	player.currentFrame += step;
-	if (player.currentFrame > 20)
+	if (player.currentFrame > player.countFrame)
 	{
-		player.currentFrame -= 20;
+		player.currentFrame -= player.countFrame;
 	}
-	player.playerSprite.setTextureRect(sf::IntRect(150, 122 * int(player.currentFrame), 150, 122));
+	player.playerSprite.setTextureRect(sf::IntRect(intRect.x, intRect.y * int(player.currentFrame), 150, 122));
 }
+
+
 
 void UpdatePlayer(Player &player, float elapsedTime)
 {
 	const float step = PLAYER_SPEED * elapsedTime;
 	UpdatePlayerRotation(player);
-	UpdatePlayerFrame(player, step);
-	player.playerSprite.move(0.1f * step, 0.1f * step);
 
-	/*sf::Vector2f position = player.playerSprite.getPosition();
-	const float step = PLAYER_SPEED * elapsedTime;
+	sf::Vector2f speed(0, 0);
+	sf::Vector2f intRect(0, 122);
+	if (player.isShoot)
+	{
+		intRect = sf::Vector2f(450, 122);
+	}
 	switch (player.direction)
 	{
 	case Direction::UP:
-	position.y -= step;
+		player.countFrame = 16;
 	break;
 	case Direction::DOWN:
-	position.y += step;
+		player.countFrame = 16;
 	break;
 	case Direction::LEFT:
-	position.x -= step;
+		player.countFrame = 16;
 	break;
 	case Direction::RIGHT:
-	position.x += step;
+		player.countFrame = 16;
 	break;
 	case Direction::NONE:
-
+		if (player.isShoot)
+		{
+			intRect = sf::Vector2f(300, 122);
+		}
+		else
+		{
+			intRect = sf::Vector2f(150, 122);
+		}
+		player.countFrame = 20;
+		
 	break;
-	}*/
+	}
+	std::cout << player.isShoot << std::endl;
+	UpdatePlayerFrame(player, step, intRect);
+	//player.playerSprite.move(0.1f * step, 0.1f * step);
 }
 
 void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
@@ -97,25 +116,25 @@ void HandlePlayerKeyRelease(const sf::Event::KeyEvent &event, Player &player)
 	bool handled = true;
 	switch (event.code)
 	{
-	case sf::Keyboard::Up:
+	case sf::Keyboard::W:
 		if (player.direction == Direction::UP)
 		{
 			player.direction = Direction::NONE;
 		}
 		break;
-	case sf::Keyboard::Down:
+	case sf::Keyboard::S:
 		if (player.direction == Direction::DOWN)
 		{
 			player.direction = Direction::NONE;
 		}
 		break;
-	case sf::Keyboard::Left:
+	case sf::Keyboard::A:
 		if (player.direction == Direction::LEFT)
 		{
 			player.direction = Direction::NONE;
 		}
 		break;
-	case sf::Keyboard::Right:
+	case sf::Keyboard::D:
 		if (player.direction == Direction::RIGHT)
 		{
 			player.direction = Direction::NONE;

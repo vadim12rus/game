@@ -28,9 +28,23 @@ void HandleEvents(sf::RenderWindow & window, Player &player)
 			break;
 		case sf::Event::KeyReleased:
 			HandlePlayerKeyRelease(event.key, player);
-			break;
 		default:
 			break;
+		}
+
+		if (event.type == sf::Event::MouseButtonPressed)
+		{
+			if (event.key.code == sf::Mouse::Left)
+			{
+				player.isShoot = true;
+			}
+		}
+		else  if (event.type == sf::Event::MouseButtonReleased)
+		{
+			if (event.key.code == sf::Mouse::Left)
+			{
+				player.isShoot = false;
+			}
 		}
 
 	}
