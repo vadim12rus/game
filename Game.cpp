@@ -12,7 +12,7 @@ void InitializeGame(Game & game)
 
 void ResizeWindowGame(sf::RenderWindow & window)
 {
-	unsigned int windowWidth = window.getSize().x;
-	unsigned int windowHeight = window.getSize().y;
-	window.create(sf::VideoMode(windowWidth, windowHeight), "Game");
+	float windowWidth = static_cast<float>(window.getSize().x);
+	float windowHeight = static_cast<float>(window.getSize().y);
+	window.setView(sf::View(sf::FloatRect(0, 0, windowWidth, windowHeight)));
 }
