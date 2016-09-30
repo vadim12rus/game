@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
+#include "Config.h"
+#include <iostream>
 
 void InitializePlayer(Player & player, TextureGame & texture)
 {
@@ -8,7 +10,41 @@ void InitializePlayer(Player & player, TextureGame & texture)
 	player.playerSprite.setPosition(250, 250);
 }
 
-void handlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
+void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f mousePosition)
+{
+	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+	mousePosition = window.mapPixelToCoords(pixelPos);
+	std::cout << mousePosition.x << std::endl;
+}
+
+void UpdatePlayer(Player &player, float elapsedTime)
+{
+
+	const float step = PLAYER_SPEED * elapsedTime;
+	sf::Vector2f position = player.playerSprite.getPosition();
+	switch (player.direction)
+	{
+	case Direction::UP:
+		position.y -= step;
+		break;
+	case Direction::DOWN:
+		position.y += step;
+		break;
+	case Direction::LEFT:
+		position.x -= step;
+		break;
+	case Direction::RIGHT:
+		position.x += step;
+		break;
+	case Direction::NONE:
+
+		break;
+	}
+	player.playerSprite.move(0.01, 0.01);
+	//packman.shape.setPosition(position);
+}
+
+void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
 {
 	bool handled = true;
 	switch (event.code)
@@ -31,7 +67,7 @@ void handlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
 	}
 }
 
-void handlePlayerKeyRelease(const sf::Event::KeyEvent &event, Player &player)
+void HandlePlayerKeyRelease(const sf::Event::KeyEvent &event, Player &player)
 {
 	bool handled = true;
 	switch (event.code)

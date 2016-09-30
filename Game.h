@@ -5,6 +5,7 @@
 struct Game
 {
 	sf::RenderWindow window;
+	sf::Clock clock;
 	Player player;
 	TextureGame textureGame;
 };

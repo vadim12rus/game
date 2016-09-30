@@ -2,8 +2,15 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 
+void Update(Game &game)
+{
+	const float elapsedTime = game.clock.getElapsedTime().asSeconds();
+	game.clock.restart();
+	UpdateMousePosition(game.window, game.player.mousePosition);
+	UpdatePlayer(game.player, elapsedTime);
+}
 
-void HandleEvents(sf::RenderWindow & window)
+void HandleEvents(sf::RenderWindow & window, Player &player)
 {
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -17,10 +24,10 @@ void HandleEvents(sf::RenderWindow & window)
 			window.close();
 			break;
 		case sf::Event::KeyPressed:
-			window.close();
+			HandlePlayerKeyPress(event.key, player);
 			break;
 		case sf::Event::KeyReleased:
-			window.close();
+			HandlePlayerKeyRelease(event.key, player);
 			break;
 		default:
 			break;
@@ -42,7 +49,8 @@ int main(int, char *[])
 	InitializeGame(game);
 	while (game.window.isOpen())
 	{
-		HandleEvents(game.window);
+		HandleEvents(game.window, game.player);
+		Update(game);
 		Render(game.window, game.player.playerSprite);
 	}
 
