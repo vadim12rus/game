@@ -26,12 +26,12 @@ void UpdatePlayerRotation(Player &player) //ѕоворот игрока за курсором мыши
 	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
 	sf::IntRect textureRect = player.playerSprite.getTextureRect();
 	player.playerSprite.setOrigin(textureRect.width / 2.f, textureRect.height / 2.f);
-	double rotation = (atan2(dy, dx)) * 180 / 3.14159265;
-	player.playerSprite.setRotation(static_cast<float>(rotation));
+	float rotation = (atan2(dy, dx)) * 180 / 3.14159265f;
+	player.playerSprite.setRotation(rotation);
 }
 
 
-void UpdatePlayerFrame(Player &player, float const step, sf::Vector2f &intRect) //обновление кадров
+void UpdatePlayerFrame(Player &player, float const step, sf::Vector2i &intRect) //обновление кадров
 {
 	player.currentFrame += step;
 	if (player.currentFrame > player.countFrame)
@@ -41,7 +41,12 @@ void UpdatePlayerFrame(Player &player, float const step, sf::Vector2f &intRect) 
 	player.playerSprite.setTextureRect(sf::IntRect(intRect.x, intRect.y * int(player.currentFrame), 150, 122));
 }
 
-
+sf::Vector2f GetNormalVector(Player &player) //ƒвигатьс€ к курсору с помощью вектора нормали
+{
+	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
+	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
+	return sf::Vector2f(dx, dy) / hypot(dx, dy);
+}
 
 void UpdatePlayer(Player &player, float elapsedTime)
 {
@@ -49,15 +54,18 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	UpdatePlayerRotation(player);
 
 	sf::Vector2f speed(0, 0);
-	sf::Vector2f intRect(0, 122);
+	sf::Vector2i intRect(0, 122);
+	sf::Vector2f normalVector = GetNormalVector(player);
+
 	if (player.isShoot)
 	{
-		intRect = sf::Vector2f(450, 122);
+		intRect = sf::Vector2i(450, 122);
 	}
 	switch (player.direction)
 	{
 	case Direction::UP:
 		player.countFrame = 16;
+		speed = sf::Vector2f(step * 3 * normalVector.x, step * 3 * normalVector.y);
 	break;
 	case Direction::DOWN:
 		player.countFrame = 16;
@@ -71,19 +79,17 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	case Direction::NONE:
 		if (player.isShoot)
 		{
-			intRect = sf::Vector2f(300, 122);
+			intRect = sf::Vector2i(300, 122);
 		}
 		else
 		{
-			intRect = sf::Vector2f(150, 122);
+			intRect = sf::Vector2i(150, 122);
 		}
 		player.countFrame = 20;
-		
 	break;
 	}
-	std::cout << player.isShoot << std::endl;
 	UpdatePlayerFrame(player, step, intRect);
-	//player.playerSprite.move(0.1f * step, 0.1f * step);
+	player.playerSprite.move(speed);
 }
 
 void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)

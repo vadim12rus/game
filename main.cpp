@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "Config.h"
 
-void Update(Game &game)
+void Update(Game &game, float elapsedTime)
 {
-	const float elapsedTime = game.clock.getElapsedTime().asSeconds();
-	game.clock.restart();
 	UpdateMousePosition(game.window, game.player.mousePosition);
 	UpdatePlayer(game.player, elapsedTime);
 }
@@ -61,11 +60,18 @@ int main(int, char *[])
 {
 	Game game;
 	InitializeGame(game);
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	while (game.window.isOpen())
 	{
-		HandleEvents(game.window, game.player);
-		Update(game);
-		Render(game.window, game.player.playerSprite);
+		timeSinceLastUpdate += game.clock.restart();
+		while (timeSinceLastUpdate > TIME_PER_FRAME)
+		{
+			float elapsedTime = timeSinceLastUpdate.asSeconds();
+		    HandleEvents(game.window, game.player);
+		    Update(game, elapsedTime);
+		    Render(game.window, game.player.playerSprite);
+		    timeSinceLastUpdate -= TIME_PER_FRAME;
+		}
 	}
 
 	return 0;

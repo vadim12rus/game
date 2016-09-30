@@ -24,7 +24,7 @@ struct Player
 	sf::Vector2f mousePosition;
 
 	float currentFrame;
-	int countFrame;
+	float countFrame;
 
 	bool isShoot;
 };
