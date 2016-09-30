@@ -10,3 +10,4 @@ struct Game
 };
 
 void InitializeGame(Game & game);
+void ResizeWindowGame(sf::RenderWindow & window);
