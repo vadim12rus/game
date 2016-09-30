@@ -16,6 +16,12 @@ void HandleEvents(sf::RenderWindow & window)
 		case sf::Event::Closed:
 			window.close();
 			break;
+		case sf::Event::KeyPressed:
+			window.close();
+			break;
+		case sf::Event::KeyReleased:
+			window.close();
+			break;
 		default:
 			break;
 		}
