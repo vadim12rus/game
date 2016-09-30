@@ -20,6 +20,7 @@ struct Player
 	sf::Sprite playerSprite;
 	Direction direction;
 	sf::Vector2f mousePosition;
+	float currentFrame = 0;
 };
 
 void InitializePlayer(Player & player, TextureGame & texture);

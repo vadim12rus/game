@@ -17,7 +17,7 @@ void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 	//std::cout << mousePosition.x << std::endl;
 }
 
-void UpdatePlayerRotation(Player &player)
+void UpdatePlayerRotation(Player &player) //Поворот игрока за курсором мыши
 {
 	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
 	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
@@ -27,55 +27,68 @@ void UpdatePlayerRotation(Player &player)
 	player.playerSprite.setRotation(static_cast<float>(rotation));
 }
 
+
+void UpdatePlayerFrame(Player &player, float const step)
+{
+	player.currentFrame += step;
+	if (player.currentFrame > 20)
+	{
+		player.currentFrame -= 20;
+	}
+	player.playerSprite.setTextureRect(sf::IntRect(150, 122 * int(player.currentFrame), 150, 122));
+}
+
 void UpdatePlayer(Player &player, float elapsedTime)
 {
+	const float step = PLAYER_SPEED * elapsedTime;
 	UpdatePlayerRotation(player);
+	UpdatePlayerFrame(player, step);
+	player.playerSprite.move(0.1f * step, 0.1f * step);
 
-
-	sf::Vector2f position = player.playerSprite.getPosition();
+	/*sf::Vector2f position = player.playerSprite.getPosition();
 	const float step = PLAYER_SPEED * elapsedTime;
 	switch (player.direction)
 	{
 	case Direction::UP:
-		position.y -= step;
-		break;
+	position.y -= step;
+	break;
 	case Direction::DOWN:
-		position.y += step;
-		break;
+	position.y += step;
+	break;
 	case Direction::LEFT:
-		position.x -= step;
-		break;
+	position.x -= step;
+	break;
 	case Direction::RIGHT:
-		position.x += step;
-		break;
+	position.x += step;
+	break;
 	case Direction::NONE:
 
-		break;
-	}
-	player.playerSprite.move(0.1f * step, 0.1f * step);
-	//packman.shape.setPosition(position);
+	break;
+	}*/
 }
 
 void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
 {
 	bool handled = true;
-	switch (event.code)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-	case sf::Keyboard::Up:
 		player.direction = Direction::UP;
-		break;
-	case sf::Keyboard::Down:
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
 		player.direction = Direction::DOWN;
-		break;
-	case sf::Keyboard::Left:
-		player.direction = Direction::LEFT;
-		break;
-	case sf::Keyboard::Right:
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
 		player.direction = Direction::RIGHT;
-		break;
-	default:
-		handled = false;
-		break;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		player.direction = Direction::LEFT;
+	}
+	else
+	{
+		player.direction = Direction::NONE;
 	}
 }
 
