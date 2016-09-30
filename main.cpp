@@ -1,12 +1,7 @@
 #include "stdafx.h"
 #include <SFML/Graphics.hpp>
+#include "Game.h"
 
-void initializePackman(sf::CircleShape & shape)
-{
-	shape.setRadius(20);
-	shape.setFillColor(sf::Color::Green);
-	shape.setPosition(100, 0);
-}
 
 void handleEvents(sf::RenderWindow & window)
 {
@@ -20,23 +15,21 @@ void handleEvents(sf::RenderWindow & window)
 	}
 }
 
-void render(sf::RenderWindow & window, sf::CircleShape & shape)
+void render(sf::RenderWindow & window, sf::Sprite & playerSprite)
 {
 	window.clear();
-	window.draw(shape);
+	window.draw(playerSprite);
 	window.display();
 }
 
 int main(int, char *[])
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Window Title");
-	sf::CircleShape packman;
-	initializePackman(packman);
-
-	while (window.isOpen())
+	Game game;
+	InitializeGame(game);
+	while (game.window.isOpen())
 	{
-		handleEvents(window);
-		render(window, packman);
+		handleEvents(game.window);
+		render(game.window, game.player.playerSprite);
 	}
 
 	return 0;
