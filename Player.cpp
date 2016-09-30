@@ -10,18 +10,30 @@ void InitializePlayer(Player & player, TextureGame & texture)
 	player.playerSprite.setPosition(250, 250);
 }
 
-void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f mousePosition)
+void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 {
 	sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
 	mousePosition = window.mapPixelToCoords(pixelPos);
-	std::cout << mousePosition.x << std::endl;
+	//std::cout << mousePosition.x << std::endl;
+}
+
+void UpdatePlayerRotation(Player &player)
+{
+	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
+	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
+	sf::IntRect textureRect = player.playerSprite.getTextureRect();
+	player.playerSprite.setOrigin(textureRect.width / 2.f, textureRect.height / 2.f);
+	double rotation = (atan2(dy, dx)) * 180 / 3.14159265;
+	player.playerSprite.setRotation(static_cast<float>(rotation));
 }
 
 void UpdatePlayer(Player &player, float elapsedTime)
 {
+	UpdatePlayerRotation(player);
 
-	const float step = PLAYER_SPEED * elapsedTime;
+
 	sf::Vector2f position = player.playerSprite.getPosition();
+	const float step = PLAYER_SPEED * elapsedTime;
 	switch (player.direction)
 	{
 	case Direction::UP:
@@ -40,7 +52,7 @@ void UpdatePlayer(Player &player, float elapsedTime)
 
 		break;
 	}
-	player.playerSprite.move(0.01, 0.01);
+	player.playerSprite.move(0.1f * step, 0.1f * step);
 	//packman.shape.setPosition(position);
 }
 

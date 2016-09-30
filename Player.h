@@ -26,4 +26,4 @@ void InitializePlayer(Player & player, TextureGame & texture);
 void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player);
 void HandlePlayerKeyRelease(const sf::Event::KeyEvent &event, Player &player);
 void UpdatePlayer(Player &player, float elapsedTime);
-void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f mousePosition);
+void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition);
