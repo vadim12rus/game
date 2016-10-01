@@ -15,3 +15,6 @@ void InitializeGame(Game & game);
 void ResizeWindowGame(sf::RenderWindow & window);
 void ReplaceStandardCursor(sf::Texture &cursorTexture, sf::Sprite &cursorSprite);
 void UpdateCursorPosition(sf::RenderWindow & window, sf::Sprite &cursorSprite);
+void HandleEvents(sf::RenderWindow & window, Player &player);
+void Update(Game &game, float elapsedTime);
+void Render(sf::RenderWindow & window, sf::Sprite & playerSprite, sf::Sprite &cursorSprite);

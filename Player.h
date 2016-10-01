@@ -1,6 +1,18 @@
 #pragma once
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Texture.h"
+
+struct PlayerSound
+{
+	sf::SoundBuffer soundShotgunShotBuffer;
+	sf::Sound soundShotgunShot;
+
+	sf::SoundBuffer soundM4A1ShotBuffer;
+	sf::Sound soundM4A1Shot;
+
+	void LoadingFromFileSound();
+};
 
 enum struct Arms
 {
@@ -15,10 +27,6 @@ enum struct Direction
 	DOWN,
 	LEFT,
 	RIGHT,
-	UP_LEFT,
-	UP_RIGHT,
-	DOWN_LEFT,
-	DOWN_RIGHT,
 };
 
 struct Player
@@ -32,8 +40,9 @@ struct Player
 	float currentFrame;
 	float countFrame;
 
-	bool isShoot;
+	bool isShot;
 	Arms weapon;
+	PlayerSound playerSound;
 };
 
 void InitializePlayer(Player & player, TextureGame & texture);
@@ -41,3 +50,4 @@ void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player);
 void HandlePlayerKeyRelease(const sf::Event::KeyEvent &event, Player &player);
 void UpdatePlayer(Player &player, float elapsedTime);
 void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition);
+void InitializePlayerSound(Player &player);

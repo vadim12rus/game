@@ -6,14 +6,34 @@
 void InitializePlayer(Player & player, TextureGame & texture)
 {
 	player.playerSprite.setTexture(texture.playerTexture);
+	InitializePlayerSound(player);
 	player.playerSprite.setTextureRect(sf::IntRect(150, 121, 150, 121));
 	player.playerSprite.setPosition(250, 250);
 	player.direction = Direction::NONE;
 	player.countFrame = 0;
 	player.currentFrame = 0;
-	player.isShoot = false;
+	player.isShot = false;
 	player.weapon = Arms::SHOTGUN;
 }
+
+void PlayerSound::LoadingFromFileSound()
+{
+	if (!soundShotgunShotBuffer.loadFromFile("resources/sound/shotgun.ogg"))
+	{
+		exit(1);
+	}
+	if (!soundM4A1ShotBuffer.loadFromFile("resources/sound/m4a1.ogg"))
+	{
+		exit(1);
+	}
+}
+
+void InitializePlayerSound(Player & player)
+{
+	player.playerSound.soundShotgunShot.setBuffer(player.playerSound.soundShotgunShotBuffer);
+	player.playerSound.soundM4A1Shot.setBuffer(player.playerSound.soundM4A1ShotBuffer);
+}
+
 
 void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition)
 {
@@ -29,31 +49,37 @@ void UpdatePlayerRotation(Player &player) //Поворот игрока за курсором мыши
 	player.playerSprite.setOrigin(textureRect.width / 2.f, textureRect.height / 2.f);
 	float rotation = (atan2(dy, dx)) * 180 / 3.14159265f;
 	player.playerSprite.setRotation(rotation);
-	//std::cout << (atan2(dy, dx)) << std::endl;
 }
 
+void PlaySoundShot(Player &player)
+{
+	if (player.isShot)
+	{
+		if (player.weapon == Arms::SHOTGUN)
+		{
+			player.playerSound.soundShotgunShot.play();
+		}
+		else
+		{
+			player.playerSound.soundM4A1Shot.play();
+		}
+	}
+}
 
 void UpdatePlayerFrame(Player &player, float const step, sf::Vector2i &intRect) //обновление кадров
 {
 	player.currentFrame += step;
-	//std::cout << step << std::endl;
 	if (player.currentFrame > player.countFrame)
 	{
+		PlaySoundShot(player);
 		player.currentFrame -= player.countFrame;
 	}
 	player.playerSprite.setTextureRect(sf::IntRect(intRect.x, intRect.y * int(player.currentFrame), 150, 122));
 }
 
-/*sf::Vector2f GetNormalVector(Player &player) //Двигаться к курсору с помощью вектора нормали
+void UpdateShotRunFrame(Player &player, sf::Vector2i &rectFrame)
 {
-	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
-	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
-	return sf::Vector2f(dx, dy) / hypot(dx, dy);
-}*/
-
-void UpdateShootRunFrame(Player &player, sf::Vector2i &rectFrame)
-{
-	if (player.isShoot)
+	if (player.isShot)
 	{
 		if (player.weapon == Arms::SHOTGUN)
 		{
@@ -72,9 +98,9 @@ void UpdateShootRunFrame(Player &player, sf::Vector2i &rectFrame)
 	}
 }
 
-void UpdateShootStandFrame(Player &player, sf::Vector2i &rectFrame)
+void UpdateShotStandFrame(Player &player, sf::Vector2i &rectFrame)
 {
-	if (player.isShoot)
+	if (player.isShot)
 	{
 		if (player.weapon == Arms::SHOTGUN)
 		{
@@ -109,7 +135,7 @@ void UpdatePlayer(Player &player, float elapsedTime)
 		player.direction = Direction::NONE;
 	}
 
-	UpdateShootRunFrame(player, rectFrame);
+	UpdateShotRunFrame(player, rectFrame);
 	switch (player.direction)
 	{
 	case Direction::UP:
@@ -126,7 +152,7 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	break;
 	case Direction::NONE:
 		player.countFrame = 20;
-		UpdateShootStandFrame(player, rectFrame);
+		UpdateShotStandFrame(player, rectFrame);
 	break;
 	}
 
