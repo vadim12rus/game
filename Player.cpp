@@ -28,12 +28,14 @@ void UpdatePlayerRotation(Player &player) //Поворот игрока за курсором мыши
 	player.playerSprite.setOrigin(textureRect.width / 2.f, textureRect.height / 2.f);
 	float rotation = (atan2(dy, dx)) * 180 / 3.14159265f;
 	player.playerSprite.setRotation(rotation);
+	//std::cout << (atan2(dy, dx)) << std::endl;
 }
 
 
 void UpdatePlayerFrame(Player &player, float const step, sf::Vector2i &intRect) //обновление кадров
 {
 	player.currentFrame += step;
+	//std::cout << step << std::endl;
 	if (player.currentFrame > player.countFrame)
 	{
 		player.currentFrame -= player.countFrame;
@@ -41,22 +43,31 @@ void UpdatePlayerFrame(Player &player, float const step, sf::Vector2i &intRect) 
 	player.playerSprite.setTextureRect(sf::IntRect(intRect.x, intRect.y * int(player.currentFrame), 150, 122));
 }
 
-sf::Vector2f GetNormalVector(Player &player) //Двигаться к курсору с помощью вектора нормали
+/*sf::Vector2f GetNormalVector(Player &player) //Двигаться к курсору с помощью вектора нормали
 {
 	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
 	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
 	return sf::Vector2f(dx, dy) / hypot(dx, dy);
-}
+}*/
 
 void UpdatePlayer(Player &player, float elapsedTime)
 {
 	const float step = PLAYER_SPEED * elapsedTime;
 	UpdatePlayerRotation(player);
 
+	float dx = player.mousePosition.x - player.playerSprite.getPosition().x;
+	float dy = player.mousePosition.y - player.playerSprite.getPosition().y;
+	float distance = hypot(dx, dy);
+	sf::Vector2f normalVector = sf::Vector2f(dx, dy)/ distance;
+
+	std::cout << std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f) << std::endl;
+
 	sf::Vector2f speed(0, 0);
 	sf::Vector2i intRect(0, 122);
-	sf::Vector2f normalVector = GetNormalVector(player);
-
+	if (distance < 5)
+	{
+		player.direction = Direction::NONE;
+	}
 	if (player.isShoot)
 	{
 		intRect = sf::Vector2i(450, 122);
@@ -65,16 +76,19 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	{
 	case Direction::UP:
 		player.countFrame = 16;
-		speed = sf::Vector2f(step * 3 * normalVector.x, step * 3 * normalVector.y);
+		speed = sf::Vector2f(step * 5 * normalVector.x, step * 5 * normalVector.y);
 	break;
 	case Direction::DOWN:
 		player.countFrame = 16;
+		speed = sf::Vector2f(-step * 3 * normalVector.x, -step * 3 * normalVector.y);
 	break;
 	case Direction::LEFT:
 		player.countFrame = 16;
+		speed = sf::Vector2f(step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), -std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3 );
 	break;
 	case Direction::RIGHT:
 		player.countFrame = 16;
+		speed = sf::Vector2f(-step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3);
 	break;
 	case Direction::NONE:
 		if (player.isShoot)
@@ -88,6 +102,7 @@ void UpdatePlayer(Player &player, float elapsedTime)
 		player.countFrame = 20;
 	break;
 	}
+
 	UpdatePlayerFrame(player, step, intRect);
 	player.playerSprite.move(speed);
 }

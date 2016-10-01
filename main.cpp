@@ -55,15 +55,16 @@ void Render(sf::RenderWindow & window, sf::Sprite & playerSprite)
 	window.draw(playerSprite);
 	window.display();
 }
-
+const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f);
 int main(int, char *[])
 {
 	Game game;
 	InitializeGame(game);
+	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	while (game.window.isOpen())
 	{
-		timeSinceLastUpdate += game.clock.restart();
+		timeSinceLastUpdate += clock.restart();
 		while (timeSinceLastUpdate > TIME_PER_FRAME)
 		{
 			float elapsedTime = timeSinceLastUpdate.asSeconds();
