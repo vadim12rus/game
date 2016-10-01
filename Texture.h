@@ -4,6 +4,7 @@
 struct TextureGame
 {
 	sf::Texture playerTexture;
+	sf::Texture cursorTexture;
 
 	void LoadingFromFileTexture();
 };

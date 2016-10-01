@@ -60,8 +60,6 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	float distance = hypot(dx, dy);
 	sf::Vector2f normalVector = sf::Vector2f(dx, dy)/ distance;
 
-	std::cout << std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f) << std::endl;
-
 	sf::Vector2f speed(0, 0);
 	sf::Vector2i intRect(0, 122);
 	if (distance < 5)

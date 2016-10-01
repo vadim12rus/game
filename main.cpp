@@ -7,6 +7,7 @@ void Update(Game &game, float elapsedTime)
 {
 	UpdateMousePosition(game.window, game.player.mousePosition);
 	UpdatePlayer(game.player, elapsedTime);
+	UpdateCursorPosition(game.window, game.cursorSprite);
 }
 
 void HandleEvents(sf::RenderWindow & window, Player &player)
@@ -49,19 +50,21 @@ void HandleEvents(sf::RenderWindow & window, Player &player)
 	}
 }
 
-void Render(sf::RenderWindow & window, sf::Sprite & playerSprite)
+void Render(sf::RenderWindow & window, sf::Sprite & playerSprite, sf::Sprite &cursorSprite)
 {
 	window.clear();
+	window.draw(cursorSprite);
 	window.draw(playerSprite);
 	window.display();
 }
-const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f);
+
 int main(int, char *[])
 {
 	Game game;
 	InitializeGame(game);
 	sf::Clock clock;
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	game.window.setMouseCursorVisible(false);
 	while (game.window.isOpen())
 	{
 		timeSinceLastUpdate += clock.restart();
@@ -70,7 +73,7 @@ int main(int, char *[])
 			float elapsedTime = timeSinceLastUpdate.asSeconds();
 		    HandleEvents(game.window, game.player);
 		    Update(game, elapsedTime);
-		    Render(game.window, game.player.playerSprite);
+		    Render(game.window, game.player.playerSprite, game.cursorSprite);
 		    timeSinceLastUpdate -= TIME_PER_FRAME;
 		}
 	}
