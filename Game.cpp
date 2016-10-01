@@ -26,7 +26,6 @@ void UpdateCursorPosition(sf::RenderWindow & window, sf::Sprite &cursorSprite)
 void ReplaceStandardCursor(sf::Texture &cursorTexture, sf::Sprite &cursorSprite)
 {
 	cursorSprite.setTexture(cursorTexture);
-	//cursorSprite.setScale(0.2, 0.2);
 	cursorSprite.setOrigin(cursorTexture.getSize().x / 2.f, cursorTexture.getSize().y / 2.f);
 	cursorSprite.setPosition(100, 100);
 }

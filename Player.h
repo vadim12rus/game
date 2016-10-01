@@ -2,6 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include "Texture.h"
 
+enum struct Arms
+{
+	SHOTGUN,
+	M4A1
+};
+
 enum struct Direction
 {
 	NONE,
@@ -27,6 +33,7 @@ struct Player
 	float countFrame;
 
 	bool isShoot;
+	Arms weapon;
 };
 
 void InitializePlayer(Player & player, TextureGame & texture);

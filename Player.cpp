@@ -12,6 +12,7 @@ void InitializePlayer(Player & player, TextureGame & texture)
 	player.countFrame = 0;
 	player.currentFrame = 0;
 	player.isShoot = false;
+	player.weapon = Arms::SHOTGUN;
 }
 
 void UpdateMousePosition(sf::RenderWindow &window, sf::Vector2f &mousePosition)
@@ -68,24 +69,34 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	}
 	if (player.isShoot)
 	{
-		intRect = sf::Vector2i(450, 122);
+		if (player.weapon == Arms::SHOTGUN)
+		{
+			intRect = sf::Vector2i(450, 122);
+			player.countFrame = 20;
+		}
+		else
+		{
+			intRect = sf::Vector2i(600, 122);
+			player.countFrame = 12;
+		}
 	}
+	else
+	{
+		player.countFrame = 16;
+	}
+
 	switch (player.direction)
 	{
 	case Direction::UP:
-		player.countFrame = 16;
 		speed = sf::Vector2f(step * 5 * normalVector.x, step * 5 * normalVector.y);
 	break;
 	case Direction::DOWN:
-		player.countFrame = 16;
 		speed = sf::Vector2f(-step * 3 * normalVector.x, -step * 3 * normalVector.y);
 	break;
 	case Direction::LEFT:
-		player.countFrame = 16;
 		speed = sf::Vector2f(step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), -std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3 );
 	break;
 	case Direction::RIGHT:
-		player.countFrame = 16;
 		speed = sf::Vector2f(-step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3);
 	break;
 	case Direction::NONE:
@@ -107,26 +118,30 @@ void UpdatePlayer(Player &player, float elapsedTime)
 
 void HandlePlayerKeyPress(const sf::Event::KeyEvent &event, Player &player)
 {
-	bool handled = true;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+
+	switch (event.code)
 	{
+	case sf::Keyboard::W:
 		player.direction = Direction::UP;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
+		break;
+	case sf::Keyboard::S:
 		player.direction = Direction::DOWN;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		player.direction = Direction::RIGHT;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
+		break;
+	case sf::Keyboard::A:
 		player.direction = Direction::LEFT;
-	}
-	else
-	{
+		break;
+	case sf::Keyboard::D:
+		player.direction = Direction::RIGHT;
+		break;
+	case sf::Keyboard::Q:
+		player.weapon = Arms::M4A1;
+		break;
+	case sf::Keyboard::E:
+		player.weapon = Arms::SHOTGUN;
+		break;
+	default:
 		player.direction = Direction::NONE;
+		break;
 	}
 }
 
