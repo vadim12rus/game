@@ -51,6 +51,47 @@ void UpdatePlayerFrame(Player &player, float const step, sf::Vector2i &intRect) 
 	return sf::Vector2f(dx, dy) / hypot(dx, dy);
 }*/
 
+void UpdateShootRunFrame(Player &player, sf::Vector2i &rectFrame)
+{
+	if (player.isShoot)
+	{
+		if (player.weapon == Arms::SHOTGUN)
+		{
+			rectFrame = sf::Vector2i(450, 122);
+			player.countFrame = 20;
+		}
+		else
+		{
+			rectFrame = sf::Vector2i(600, 122);
+			player.countFrame = 12;
+		}
+	}
+	else
+	{
+		player.countFrame = 16;
+	}
+}
+
+void UpdateShootStandFrame(Player &player, sf::Vector2i &rectFrame)
+{
+	if (player.isShoot)
+	{
+		if (player.weapon == Arms::SHOTGUN)
+		{
+			rectFrame = sf::Vector2i(300, 122);
+		}
+		else
+		{
+			rectFrame = sf::Vector2i(750, 122);
+			player.countFrame = 5;
+		}
+	}
+	else
+	{
+		rectFrame = sf::Vector2i(150, 122);
+	}
+}
+
 void UpdatePlayer(Player &player, float elapsedTime)
 {
 	const float step = PLAYER_SPEED * elapsedTime;
@@ -62,29 +103,13 @@ void UpdatePlayer(Player &player, float elapsedTime)
 	sf::Vector2f normalVector = sf::Vector2f(dx, dy)/ distance;
 
 	sf::Vector2f speed(0, 0);
-	sf::Vector2i intRect(0, 122);
+	sf::Vector2i rectFrame(0, 122);
 	if (distance < 5)
 	{
 		player.direction = Direction::NONE;
 	}
-	if (player.isShoot)
-	{
-		if (player.weapon == Arms::SHOTGUN)
-		{
-			intRect = sf::Vector2i(450, 122);
-			player.countFrame = 20;
-		}
-		else
-		{
-			intRect = sf::Vector2i(600, 122);
-			player.countFrame = 12;
-		}
-	}
-	else
-	{
-		player.countFrame = 16;
-	}
 
+	UpdateShootRunFrame(player, rectFrame);
 	switch (player.direction)
 	{
 	case Direction::UP:
@@ -94,25 +119,18 @@ void UpdatePlayer(Player &player, float elapsedTime)
 		speed = sf::Vector2f(-step * 3 * normalVector.x, -step * 3 * normalVector.y);
 	break;
 	case Direction::LEFT:
-		speed = sf::Vector2f(step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), -std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3 );
+		speed = sf::Vector2f(step * 3 * std::sin(PI * player.playerSprite.getRotation() / 180.f), -std::cos(PI * player.playerSprite.getRotation() / 180.f) *step * 3 );
 	break;
 	case Direction::RIGHT:
-		speed = sf::Vector2f(-step * 3 * std::sin(3.14159265 * player.playerSprite.getRotation() / 180.f), std::cos(3.14159265 * player.playerSprite.getRotation() / 180.f) *step * 3);
+		speed = sf::Vector2f(-step * 3 * std::sin(PI * player.playerSprite.getRotation() / 180.f), std::cos(PI * player.playerSprite.getRotation() / 180.f) *step * 3);
 	break;
 	case Direction::NONE:
-		if (player.isShoot)
-		{
-			intRect = sf::Vector2i(300, 122);
-		}
-		else
-		{
-			intRect = sf::Vector2i(150, 122);
-		}
 		player.countFrame = 20;
+		UpdateShootStandFrame(player, rectFrame);
 	break;
 	}
 
-	UpdatePlayerFrame(player, step, intRect);
+	UpdatePlayerFrame(player, step, rectFrame);
 	player.playerSprite.move(speed);
 }
 
