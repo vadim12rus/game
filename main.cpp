@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
 #include "Config.h"
+#include <iostream>
 
 int main(int, char *[])
 {
@@ -18,7 +19,8 @@ int main(int, char *[])
 			float elapsedTime = timeSinceLastUpdate.asSeconds();
 		    HandleEvents(game.window, game.player);
 		    Update(game, elapsedTime);
-		    Render(game.window, game.player.playerSprite, game.cursorSprite);
+			//GetPlayerCoordinateForView(game.view, game.player.playerSprite.getPosition());
+		    Render(game.window, game.player.playerSprite, game.cursorSprite, game);
 		    timeSinceLastUpdate -= TIME_PER_FRAME;
 		}
 	}

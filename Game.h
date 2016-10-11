@@ -13,8 +13,9 @@ struct Game
 
 void InitializeGame(Game & game);
 void ResizeWindowGame(sf::RenderWindow & window);
-void ReplaceStandardCursor(sf::Texture &cursorTexture, sf::Sprite &cursorSprite);
+void ReplaceCursor(sf::Texture &cursorTexture, sf::Sprite &cursorSprite);
 void UpdateCursorPosition(sf::RenderWindow & window, sf::Sprite &cursorSprite);
 void HandleEvents(sf::RenderWindow & window, Player &player);
 void Update(Game &game, float elapsedTime);
-void Render(sf::RenderWindow & window, sf::Sprite & playerSprite, sf::Sprite &cursorSprite);
+void Render(sf::RenderWindow & window, sf::Sprite & playerSprite, sf::Sprite &cursorSprite, Game &game);
+void GetPlayerCoordinateForView(sf::View & view, sf::Vector2f playerPosition);
